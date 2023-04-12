@@ -35,42 +35,38 @@ fps = 60
 screen = pygame.display.set_mode((ancho_ventana, alto_ventana))
 pygame.display.set_caption(titulo_ventana)
 
+import math
+
+import math
+
 def Angulo3Puntos(centro_x, centro_y, punto_inicio_angulo_x, punto_inicio_angulo_y, punto2_x, punto2_y):
     """
-    Esta funcion encuentra el angulo entre 3 puntos: el central, punto 1 y 2
+    Esta función encuentra el ángulo entre 3 puntos: el central, punto 1 y punto 2
     Argumentos:
-        centro_x (any) => x de centro_x
-
-        centro_y (any) => y de centro_y
-
-        punto_inicio_angulo_x (any) => x del punto de inicio del angulo
-
-        punto_inicio_angulo_y (any) => y del punto de inicio del angulo
-
-        punto2_x (any) => x de punto2_x
-
-        punto2_y (any) => y de punto2_y
+        centro_x (any) => x del centro_x
+        centro_y (any) => y del centro_y
+        punto_inicio_angulo_x (any) => x del punto de inicio del ángulo
+        punto_inicio_angulo_y (any) => y del punto de inicio del ángulo
+        punto2_x (any) => x del punto2_x
+        punto2_y (any) => y del punto2_y
     Devuelve:
-        float: Angulo entre los 3 puntos en grados
+        float: Ángulo entre los 3 puntos en grados, dentro del rango de 0 a 365 grados
     """
     # Calcula los vectores desde el centro al punto
     vector1 = [punto_inicio_angulo_x - centro_x, punto_inicio_angulo_y - centro_y]
     vector2 = [punto2_x - centro_x, punto2_y - centro_y]
     
-    # Calcula el producto escalar ("es como la similitud entre los 2 vectores")
-    dot_product = vector1[0] * vector2[0] + vector1[1] * vector2[1]
-    # Calcula la longitud de los vectores
-    longitudvector1 = math.sqrt(vector1[0]**2 + vector1[1]**2)
-    longitudvector2 = math.sqrt(vector2[0]**2 + vector2[1]**2)
+    # Calcula el ángulo utilizando la función atan2 y lo convierte a grados
+    angulo_rad = math.atan2(vector2[1], vector2[0]) - math.atan2(vector1[1], vector1[0])
+    angulo_deg = math.degrees(angulo_rad)
     
-    # Calcula el angulo utilizando la funcion arc cosine y lo devuelve en grados
-    #https://mathsathome.com/angle-between-two-vectors/#Angle_Between_Two_Vectors_Formula
-    #Formula θ = arccos((A · B) / (|A| * |B|))
-    #A*B son El producto escalar ("La similitud en 2 vectores")
-    #|A| * |B| son las longitudes de cada vector
-    angulo = math.degrees(math.acos(dot_product / (longitudvector1 * longitudvector2)))
+    # Asegura que el ángulo esté dentro del rango de 0 a 365 grados
+    if angulo_deg < 0:
+        angulo_deg += 365
     
-    return angulo
+    return angulo_deg
+
+
 
 #Funcion del algoritmo
 def AlgoritmoDelPuntoMedio(centro_x, centro_y, radio, punto_inicio_angulo_x, punto_inicio_angulo_y, angulo_final):
@@ -86,31 +82,39 @@ def AlgoritmoDelPuntoMedio(centro_x, centro_y, radio, punto_inicio_angulo_x, pun
 
         if Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_y+y, centro_ventana_x+x) <= angulo_final and Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_y+y, centro_ventana_x+x) >= 0:
             pygame.draw.rect(screen, ROJO, pygame.Rect(centro_ventana_y+y, centro_ventana_x+x, 1, 1), 1)
-            pygame.time.wait(50)
+
             
 
         #Copiamos el resultado en los 7 octantes restantes como indica esta imagen: https://www.includehelp.com/computer-graphics/Images/Bresenhams-Circle-Drawing-Algorithm.jpg
         #Segundo octante:
-        pygame.draw.rect(screen, VERDE, pygame.Rect(centro_ventana_x+x, centro_ventana_y+y, 1, 1), 1)
+        if Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_x+x, centro_ventana_y+y) <= angulo_final and Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_x+x, centro_ventana_y+y) >= 0:
+            pygame.draw.rect(screen, VERDE, pygame.Rect(centro_ventana_x+x, centro_ventana_y+y, 1, 1), 1)
 
         #Tercero octante:
-        pygame.draw.rect(screen, NARANJA, pygame.Rect(centro_ventana_x+x, centro_ventana_y-y, 1, 1), 1)
+        if Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_x+x, centro_ventana_y-y) <= angulo_final and Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_x+x, centro_ventana_y-y) >= 0:
+            pygame.draw.rect(screen, NARANJA, pygame.Rect(centro_ventana_x+x, centro_ventana_y-y, 1, 1), 1)
 
         #Cuarto octante:
-        pygame.draw.rect(screen, ROSA, pygame.Rect(centro_ventana_y+y, centro_ventana_x-x, 1, 1), 1)
+        if Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_y+y, centro_ventana_x-x) <= angulo_final and Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_y+y, centro_ventana_x-x) >= 0:
+            pygame.draw.rect(screen, ROSA, pygame.Rect(centro_ventana_y+y, centro_ventana_x-x, 1, 1), 1)
 
         #Quinto octante:
-        pygame.draw.rect(screen, CYAN, pygame.Rect(centro_ventana_y-y, centro_ventana_x-x, 1, 1), 1)
+        if Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_y-y, centro_ventana_x-x) <= angulo_final and Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_y-y, centro_ventana_x-x) >= 0:
+            pygame.draw.rect(screen, CYAN, pygame.Rect(centro_ventana_y-y, centro_ventana_x-x, 1, 1), 1)
 
         #Sexto octante:
-        pygame.draw.rect(screen, MORADO, pygame.Rect(centro_ventana_x-x, centro_ventana_y-y, 1, 1), 1)
+        if Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_x-x, centro_ventana_y-y) <= angulo_final and Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_x-x, centro_ventana_y-y) >= 0:
+            pygame.draw.rect(screen, MORADO, pygame.Rect(centro_ventana_x-x, centro_ventana_y-y, 1, 1), 1)
 
         #Septimo octante:
-        pygame.draw.rect(screen, AMARILLO, pygame.Rect(centro_ventana_x-x, centro_ventana_y+y, 1, 1), 1)
+        if Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_x-x, centro_ventana_y+y) <= angulo_final and Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_x-x, centro_ventana_y+y) >= 0:
+            pygame.draw.rect(screen, AMARILLO, pygame.Rect(centro_ventana_x-x, centro_ventana_y+y, 1, 1), 1)
 
         #Octavo octante:
-        pygame.draw.rect(screen, MARON_PERU, pygame.Rect(centro_ventana_y-y, centro_ventana_x+x, 1, 1), 1)
+        if Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_y-y, centro_ventana_x+x) <= angulo_final and Angulo3Puntos(centro_ventana_x, centro_ventana_y, punto_inicio_angulo_x, punto_inicio_angulo_y, centro_ventana_y-y, centro_ventana_x+x) >= 0:
+            pygame.draw.rect(screen, MARON_PERU, pygame.Rect(centro_ventana_y-y, centro_ventana_x+x, 1, 1), 1)
 
+        pygame.time.wait(100)
         pygame.display.flip()
         x = x + 1
 
@@ -139,7 +143,7 @@ while True:
     # Dibujar la circunferencia utilizando el algoritmo del punto medio
     
 
-    AlgoritmoDelPuntoMedio(centro_x, centro_y, radio, centro_ventana_x, centro_ventana_y-radio, 100)
+    AlgoritmoDelPuntoMedio(centro_x, centro_y, radio/2, centro_ventana_x, centro_ventana_y-radio, 180)
 
 
     # Actualizar la pantalla
