@@ -35,6 +35,38 @@ fps = 60
 screen = pygame.display.set_mode((ancho_ventana, alto_ventana))
 pygame.display.set_caption(titulo_ventana)
 
+def Angulo3Puntos(centro_x, centro_y, punto1_x, punto1_y, punto2_x, punto2_y):
+    """
+    Esta funcion encuentra el angulo entre 3 puntos: el central, punto 1 y 2
+    Argumentos:
+        centro_x (float) => x de centro_x
+        centro_y (float) => y de centro_y
+        punto1_x (float) => x de punto1_x
+        punto1_y (float) => y de punto1_y
+        punto2_x (float) => x de punto2_x
+        punto2_y (float) => y de punto2_y
+    Devuelve:
+        float: Angulo entre los 3 puntos en grados
+    """
+    # Calcula los vectores desde el centro al punto
+    vector1 = [punto1_x - centro_x, punto1_y - centro_y]
+    vector2 = [punto2_x - centro_x, punto2_y - centro_y]
+    
+    # Calcula el producto escalar ("es como la similitud entre los 2 vectores")
+    dot_product = vector1[0] * vector2[0] + vector1[1] * vector2[1]
+    # Calcula la longitud de los vectores
+    longitudvector1 = math.sqrt(vector1[0]**2 + vector1[1]**2)
+    longitudvector2 = math.sqrt(vector2[0]**2 + vector2[1]**2)
+    
+    # Calcula el angulo utilizando la funcion arc cosine y lo devuelve en grados
+    #https://mathsathome.com/angle-between-two-vectors/#Angle_Between_Two_Vectors_Formula
+    #Formula θ = arccos((A · B) / (|A| * |B|))
+    #A*B son El producto escalar ("La similitud en 2 vectores")
+    #|A| * |B| son las longitudes de cada vector
+    angulo = math.degrees(math.acos(dot_product / (longitudvector1 * longitudvector2)))
+    
+    return angulo
+
 #Funcion del algoritmo
 def AlgoritmoDelPuntoMedio(centro_x, centro_y, radio, angulo_inicio, angulo_final):
     radio = int(radio)
@@ -46,6 +78,10 @@ def AlgoritmoDelPuntoMedio(centro_x, centro_y, radio, angulo_inicio, angulo_fina
     while y >= x:
 
         #Primer octante:
+        pygame.draw.circle(screen, ROJO, (centro_ventana_x, centro_ventana_y), 5)
+        pygame.draw.circle(screen, ROJO, (centro_ventana_x, centro_ventana_y-radio), 5)
+        pygame.draw.circle(screen, ROJO, (centro_ventana_y+y, centro_ventana_x+x), 5)
+        print(Angulo3Puntos(centro_ventana_x, centro_ventana_y, centro_ventana_x, centro_ventana_y-radio, centro_ventana_x+x, centro_ventana_y-y))
         pygame.draw.rect(screen, ROJO, pygame.Rect(centro_ventana_y+y, centro_ventana_x+x, 1, 1), 1)
         pygame.time.wait(50)
         pygame.display.flip()
