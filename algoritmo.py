@@ -44,10 +44,15 @@ def Angulo3Puntos(centro_x, centro_y, punto_inicio_angulo_x, punto_inicio_angulo
     Esta función encuentra el ángulo entre 3 puntos: el central, punto 1 y punto 2
     Argumentos:
         centro_x (any) => x del centro_x
+
         centro_y (any) => y del centro_y
+
         punto_inicio_angulo_x (any) => x del punto de inicio del ángulo
+
         punto_inicio_angulo_y (any) => y del punto de inicio del ángulo
+
         punto2_x (any) => x del punto2_x
+
         punto2_y (any) => y del punto2_y
     Devuelve:
         float: Ángulo entre los 3 puntos en grados, dentro del rango de 0 a 365 grados
@@ -56,13 +61,15 @@ def Angulo3Puntos(centro_x, centro_y, punto_inicio_angulo_x, punto_inicio_angulo
     vector1 = [punto_inicio_angulo_x - centro_x, punto_inicio_angulo_y - centro_y]
     vector2 = [punto2_x - centro_x, punto2_y - centro_y]
     
+    # https://stackoverflow.com/a/21484228
+
     # Calcula el ángulo utilizando la función atan2 y lo convierte a grados
     angulo_rad = math.atan2(vector2[1], vector2[0]) - math.atan2(vector1[1], vector1[0])
     angulo_deg = math.degrees(angulo_rad)
     
     # Asegura que el ángulo esté dentro del rango de 0 a 365 grados
     if angulo_deg < 0:
-        angulo_deg += 365
+        angulo_deg = angulo_deg + 365
     
     return angulo_deg
 
@@ -142,7 +149,7 @@ while True:
 
     # Dibujar la circunferencia utilizando el algoritmo del punto medio
     
-
+    #Ejecutamos el algo
     AlgoritmoDelPuntoMedio(centro_x, centro_y, radio/2, centro_ventana_x, centro_ventana_y-radio, 180)
 
 
