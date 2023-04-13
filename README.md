@@ -25,6 +25,7 @@ Este programa solo necesita python y pygame.
 ## 📕Algo
 
 **Como funciona el algoritmo:**
+ 
 ![img](https://github.com/rconnolly2/Algoritmo_Punto_Medio_Circunferencias/blob/master/teoria.PNG?raw=true)
 
 
